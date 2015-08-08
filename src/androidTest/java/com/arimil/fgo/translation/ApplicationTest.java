@@ -1,4 +1,4 @@
-package com.arimil.fgo.fategotranslation;
+package com.arimil.fgo.translation;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

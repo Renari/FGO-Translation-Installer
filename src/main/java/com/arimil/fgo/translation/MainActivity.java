@@ -1,4 +1,4 @@
-package com.arimil.fgo.fategotranslation;
+package com.arimil.fgo.translation;
 
 import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
@@ -87,12 +87,20 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(textView.getText() + "\nCopying assets...");
             copyAssets();
             textView.setText(textView.getText() + " done");
-            File folder = new File("/data/data/com.arimil.fgo.fategotranslation/files");
+            File folder = new File("/data/data/com.arimil.fgo.translation/files");
             File[] list = folder.listFiles();
             for (File f : list) {
-                sudoForResult("mv /data/data/com.arimil.fgo.fategotranslation/files/" + f.getName() + " " +
-                        "/data/data/com.aniplex.fategrandorder/files/test/" + f.getName());
-                sudoForResult("chown " + id + "." + id + " " + "/data/data/com.aniplex.fategrandorder/files/" + f.getName());
+                String[] commands = {
+                        "chmod 777 /data/data/com.arimil.fgo.translation/files/"+f.getName(),
+                        "chmod 777 /data/data/com.aniplex.fategrandorder/files/MasterDataCaches/"+f.getName(),
+                        "rm /data/data/com.aniplex.fategrandorder/files/MasterDataCaches/"+f.getName(),
+                        "cp /data/data/com.arimil.fgo.translation/files/" + f.getName() +
+                                " /data/data/com.aniplex.fategrandorder/files/MasterDataCaches",
+                        "chown " + id + "." + id + " " + "/data/data/com.aniplex.fategrandorder/files/MasterDataCaches/" + f.getName(),
+                        "chmod 600 /data/data/com.aniplex.fategrandorder/files/MasterDataCaches/"+f.getName(),
+                        "rm /data/data/com.arimil.fgo.translation/files/"+f.getName()
+                };
+                sudoForResult(commands);
                 textView.setText(textView.getText() + "\nProcessed file: " + f.getName());
             }
             textView.setText(textView.getText() + "\npatch complete");
