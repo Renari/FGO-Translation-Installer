@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Fate/GO Translation</string>
+
+    <string name="install_button">Install</string>
+    <string name="log"></string>
+    <string name="action_settings">Settings</string>
+</resources>
