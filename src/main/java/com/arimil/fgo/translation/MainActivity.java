@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -21,12 +22,14 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
     TextView textView;
+    Button installButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView)findViewById(R.id.textView);
+        installButton = (Button)findViewById(R.id.install_button);
     }
 
     protected String sudoForResult(String...strings) {
@@ -70,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void install(View view)
     {
+        installButton.setEnabled(false);
         try {
             textView.setText("Copying patch to: " + getFilesDir());
             String result = sudoForResult("ls -l -n /data/data/com.aniplex.fategrandorder/files");
-            Pattern p = Pattern.compile("(?:\\s*)?[-rwx]*\\s*(\\d+)\\s*\\d+\\s*\\d+\\s*[\\d-]*\\s*[\\d:]*\\s(?:.*)\\.dat");
+            Pattern p = Pattern.compile("\\s*[-rwx]*\\s*(\\d+)\\s*\\d+\\s*\\d+\\s*[\\d-]*\\s*[\\d:]*\\s(?:.*)\\.dat");
             Matcher m = p.matcher(result);
             String id;
             if(m.find()) {
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(textView.getText() + "\nUnable to get guid/uid.");
                 return;
             }
+            sudoForResult("am force-stop com.aniplex.fategrandorder");
             textView.setText(textView.getText() + "\nCopying assets...");
             copyAssets();
             textView.setText(textView.getText() + " done");
@@ -109,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         {
             textView.setText(textView.getText() + "\nSomething bad happened and we weren't able to complete the patch. \n"+e.toString());
         }
-
+        installButton.setEnabled(true);
     }
 
     private void copyAssets() {
